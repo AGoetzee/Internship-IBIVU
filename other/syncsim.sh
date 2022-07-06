@@ -2,7 +2,7 @@
 # This script rsyncs a simulation.
 echo
 echo
-echo "SyncSim 1.0"
+echo "SyncSim 1.1"
 echo "By Arthur Goetzee"
 
 SCHEME=$1
@@ -13,6 +13,22 @@ JOBNODE=`squeue -u goetzee | awk -v scheme="$SCHEME" '$3 == scheme {print $8}'`
 RUNTIME=`squeue -u goetzee | awk -v scheme="$SCHEME" '$3 == scheme {print $6}'`
 DEFAULTDEST="$HOME/simulations/sasa-model-runs/"
 DEFAULTFLAGS="-vrun"
+
+
+if ! [[ $JOBNODE =~ ^r[0-9]+n[0-9]+$ ]]
+then
+   echo "No JOBNODE found! Found $JOBNODE instead."
+   echo "Exiting..." 
+   exit 1
+fi
+
+if ! [[ $JOBID =~ ^[0-9]+$ ]]
+then
+   echo "No JOBID found!"
+   echo "Exiting..."
+   exit 1
+fi
+
 
 echo "SIMULATION NAME $SCHEME"
 echo "Found JobID $JOBID"
