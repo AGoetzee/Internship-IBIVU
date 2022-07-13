@@ -19,8 +19,10 @@ do
 # Remove trailing /
 dir=${dir%*/}
 
-# Only works with numbers only
-if [[ $dir =~ [0-9]+ ]]
+# Simulation dir is either only numbers OR
+# Starts with s, followed by uppercase letter
+# Examples: 002, sNoRestraint
+if [[ $dir =~ [0-9]+ ]] || [[ $dir =~ s[A-Z].+ ]]
 then
 
   echo ****PROCESSING $dir******
