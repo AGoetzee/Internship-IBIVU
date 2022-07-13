@@ -58,7 +58,7 @@ echo -------Copying-------
 echo Copying to $TMPDIR
 
 rsync -rv $SCHEME EM chain* *.pdb "$TMPDIR"
-cd "$TMPDIR"
+cd "$TMPDIR" || exit
 
 ls
 date

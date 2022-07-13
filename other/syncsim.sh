@@ -2,21 +2,21 @@
 # This script rsyncs a simulation.
 echo
 echo
-echo "SyncSim 1.1"
+echo "SyncSim 1.3"
 echo "By Arthur Goetzee"
 
 SCHEME8=${1::8}
 SCHEME=$1
 FLAGS=$2
 DEST=$3
-JOBID=`squeue -u $USER | awk -v scheme="$SCHEME8" '$3 == scheme {print $1}'`
-JOBNODE=`squeue -u $USER | awk -v scheme="$SCHEME8" '$3 == scheme {print $8}'`
-RUNTIME=`squeue -u $USER | awk -v scheme="$SCHEME8" '$3 == scheme {print $6}'`
+JOBID=`squeue -u "$USER" | awk -v scheme="$SCHEME8" '$3 == scheme {print $1}'`
+JOBNODE=`squeue -u "$USER" | awk -v scheme="$SCHEME8" '$3 == scheme {print $8}'`
+RUNTIME=`squeue -u "$USER" | awk -v scheme="$SCHEME8" '$3 == scheme {print $6}'`
 DEFAULTFLAGS="-vrun"
 
 
 # Check which HPC the script runs on
-if [[ `hostname` =~ surfsara ]]
+if [[ $(hostname) =~ surfsara ]]
 then
     echo "LISA Node detected."
     DEFAULTDEST="$HOME/simulations/sasa-model-runs/"
