@@ -239,6 +239,59 @@ def create_projection_animation(df, stride=250, figname='/figs/proj_time'):
     animation = camera.animate()
     animation.save(figname, writer='imagemagick')
 
+def generate_difference_plot(path, file_suffix='fes_', step=1, unit='', figname='/figs/diff', title='Free Energy Landscape',
+                     suffix=''):
+
+    plt.figure(dpi=150)
+
+    diffs = []
+    mins = []
+    means = []
+
+    # Get number of strides
+    with os.scandir(path) as files:
+        max = 0
+        for f in files:
+            try:
+                filenum = re.sub('\D', '', f.name)
+                if int(filenum) > max:
+                    max = int(filenum)
+            except:
+                print(f'{f} is not a number.')
+
+
+    if isinstance(step, list):  # Only plot steps in list
+        iterator = step
+    elif isinstance(step, int):
+        assert step >= 1, f'ERROR: Step cannot be smaller than 1, got {step} instead.'
+        iterator = range(0, max + 1, step)
+    elif step == 'all':
+        iterator = range(0, max + 1)
+    else:
+        print('Something went wrong, that\'s all we know.')
+
+    for i in iterator:
+        temp = plumed.read_as_pandas(f'{path}{file_suffix}{i}.dat')
+        mean = temp[temp['t1'].between(2, 6)]['file.free'].mean()
+        minim = temp[temp['t1'].between(0, 1)]['file.free'].min()
+        diff = temp['file.free'].min() - mean
+
+        diffs.append(diff)
+        mins.append(minim)
+        means.append(mean)
+
+    plt.plot(range(len(diffs)), diffs, linestyle='dashed', linewidth=2.5, label='Final', color='black')
+    plt.legend()
+
+    plt.xlabel('Time (ns)')
+    plt.ylabel('Difference in relative FE (kJ/mol)')
+
+    plt.title(title + suffix)
+    plt.savefig(figname)
+
+    return
+
+
 
 if __name__ == '__main__':
 
@@ -274,8 +327,12 @@ if __name__ == '__main__':
         print('Plotting convergence...')
         plot_convergence(dirname + '/fesdata/', step=10, figname=dirname + '/figs/convergence')
 
+        print('Getting difference through time...')
+        generate_difference_plot(dirname + '/fesdata/', step='all', figname=dirname + '/figs/difference')
+
         print('Creating convergence animation...')
         create_conv_animation(dirname + '/fesdata/', figname=dirname + '/figs/convergence_time')
+
 
         print('Processing FES data for projection...')
         df = merge_colvar_hills(colvar=dirname + f'/COLVAR_{sim}', fesdata=dirname + '/fesdata/fes.dat')
@@ -284,3 +341,4 @@ if __name__ == '__main__':
         create_projection(df, figname=dirname + '/figs/projection')
         create_projection_animation(df, figname=dirname + '/figs/proj_time.gif')
         print(f'\t****Finished {sim}*****')
+
