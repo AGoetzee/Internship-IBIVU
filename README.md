@@ -2,7 +2,10 @@
 
 This repository is a collection of the scripts that I made during my internship at IBIVU. It is purely meant as an archive, many of these scripts have hardcoded variables or need a specific working directory. For me personally this repo serves as 1) an archive in case I need anything later, and 2) a way to record my current coding skills which I can compare myself to later.
 Having said that, feel free to look around and use any scripts or code snippets to your liking!
-Included here is a python notebook `run_workflow.ipynb`, which should be able to reproduce the umbrella sampling simulations. It has not been tested on a different system, so some tinkering may be necessary to get it to work.
+
+# Umbrella sampling workflow
+
+Included in this repository is a python workflow for umbrella sampling simulations of amyloid fibril elongation. They can be found in `UmbrellaSampling/noSASA` and `UmbrellaSampling/SASA`, which should be able to reproduce the umbrella sampling simulations. It has not been tested on a different system, so some tinkering may be necessary to get it to work on clusters other than VU BAZIS.
 
 ## Setting up
 In order to run the workflow scripts there are few prerequisites that need to be installed first. These are:
@@ -12,7 +15,7 @@ In order to run the workflow scripts there are few prerequisites that need to be
 - [Conda 4.12.0](https://docs.conda.io/en/latest/miniconda.html) with a specific environment (see below)
 
 ### Amber20
-The Amber20 simulation suite should be compiled and installed using GPU support. All my scripts were used with a GTX Titan and [CUDA 10.1.243](https://developer.nvidia.com/cuda-10.1-download-archive-base). Compilation was done using [GCC 8.3.0](https://gcc.gnu.org/gcc-8/).
+The Amber20 simulation suite should be compiled and installed using GPU support. All my scripts were used with a NVIDIA RTX 2070 and [CUDA Toolkit version 10.1.243](https://developer.nvidia.com/cuda-10.1-download-archive-base). Compilation was done using [GCC 8.3.0](https://gcc.gnu.org/gcc-8/).
 
 ### PLUMED 2.8.1
 PLUMED 2.8.1 needs to be compiled and installed including the `sasa` module. When compiling, make sure to include `--install-modules=sasa` directive. After installation, make sure to inlcude the PLUMED binaries in your `$PATH` variable and dynamically link the `$PLUMED_KERNEL` environment variable to `<your install prefix>/lib/libplumedKernel.so`. I recommend placing these commands in your `.bash_profile` file.
