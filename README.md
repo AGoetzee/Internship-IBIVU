@@ -8,6 +8,7 @@ Included here is a python notebook `run_workflow.ipynb`, which should be able to
 In order to run the workflow scripts there are few prerequisites that need to be installed first. These are:
 - [Amber20](http://ambermd.org/)
 - [PLUMED 2.8.1](https://github.com/plumed/plumed2/releases/tag/v2.8.1)
+- [WHAM 2.0.11](http://membrane.urmc.rochester.edu/?page_id=126)
 - [Conda 4.12.0](https://docs.conda.io/en/latest/miniconda.html) with a specific environment (see below)
 
 ### Amber20
@@ -15,6 +16,9 @@ The Amber20 simulation suite should be compiled and installed using GPU support.
 
 ### PLUMED 2.8.1
 PLUMED 2.8.1 needs to be compiled and installed including the `sasa` module. When compiling, make sure to include `--install-modules=sasa` directive. After installation, make sure to inlcude the PLUMED binaries in your `$PATH` variable and dynamically link the `$PLUMED_KERNEL` environment variable to `<your install prefix>/lib/libplumedKernel.so`. I recommend placing these commands in your `.bash_profile` file.
+
+### WHAM
+This program runs the weighted histogram analysis method. To fully reproduce my results, compile the program using the kJ/mol units as described in [their documentation](http://membrane.urmc.rochester.edu/sites/default/files/wham/doc.pdf)
 
 ### Conda environment
 Make sure conda 4.12.0 is installed first. Then clone the repository to a local folder, `cd` there and install the required packages using
@@ -27,4 +31,6 @@ conda activate AnalysisTools
 ```
 
 ## Running the workflow
-The entire workflow can be run from `run_workflow.ipynb`. Some of the steps are also explained in this notebook. It is recommended to check some of the file paths
+The entire workflow is run seperately for both simulation schemes. The `noSASA` scheme is the regular generalized borne implicit water model, while the `SASA` scheme includes a temperature dependent potential. Run the following two notebooks in order:
+1. `run_US_all_<scheme>.ipynb` - This prepares all the input files, parameters, PLUMED files and structures for Umbrella Sampling. If on running this on the VU BAZIS cluster, it can be submitted directly to the job scheduler. If not, please modify `batch_window.sh` to suit your needs.
+2. `WHAM_all_<scheme>.ipynb` - This runs the WHAM program to produce the free energy files, and also obtains some of the plots.
